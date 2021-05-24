@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\EquipmentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +40,16 @@ class Equipment
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
+
+    /**
+     * @ORM\OneToMany(targetEntity=StationEquipament::class, mappedBy="equipment", orphanRemoval=true)
+     */
+    private $stationEquipaments;
+
+    public function __construct()
+    {
+        $this->stationEquipaments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -88,6 +100,36 @@ class Equipment
     public function setUpdatedAt(\DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StationEquipament[]
+     */
+    public function getStationEquipaments(): Collection
+    {
+        return $this->stationEquipaments;
+    }
+
+    public function addStationEquipament(StationEquipament $stationEquipament): self
+    {
+        if (!$this->stationEquipaments->contains($stationEquipament)) {
+            $this->stationEquipaments[] = $stationEquipament;
+            $stationEquipament->setEquipment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStationEquipament(StationEquipament $stationEquipament): self
+    {
+        if ($this->stationEquipaments->removeElement($stationEquipament)) {
+            // set the owning side to null (unless already changed)
+            if ($stationEquipament->getEquipment() === $this) {
+                $stationEquipament->setEquipment(null);
+            }
+        }
 
         return $this;
     }
