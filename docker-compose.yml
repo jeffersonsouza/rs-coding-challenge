@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  roadsurfer:
+    image: jeffersonsouza/php:8-nginx
+    restart: always
+    ports:
+      - '8001:80'
+    environment:
+      - APP_ENV=dev
+      - APP_SECRET=7174804de4d1182ba366d58e14fa3480
+      - DATABASE_URL='mysql://root:roadsurferpwd@db:3306/roadsurfer?charset=utf8'
+    volumes:
+      - $PWD/config/nginx/variables.conf:/etc/nginx/http.d/variables.conf:delegated
+      - $PWD:/var/www/roadsurfer/:delegated
+  db:
+    image: mariadb
+    command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+    restart: always
+    ports:
+      - 127.0.0.1:3308:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: roadsurferpwd
+      MYSQL_DATABASE: roadsurfer
