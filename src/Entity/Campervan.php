@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CampervanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=CampervanRepository::class)
@@ -18,11 +21,13 @@ class Campervan
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ApiProperty(identifier=false)
      */
     private $id;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ApiProperty(identifier=true)
      */
     private $uuid;
 
@@ -32,11 +37,13 @@ class Campervan
     private $name;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
@@ -49,6 +56,7 @@ class Campervan
     public function __construct()
     {
         $this->bookings = new ArrayCollection();
+        $this->uuid = Uuid::v4();
     }
 
     public function getId(): ?int
@@ -105,7 +113,7 @@ class Campervan
     }
 
     /**
-     * @return Collection|Booking[]
+     * @return Booking[]|Collection
      */
     public function getBookings(): Collection
     {

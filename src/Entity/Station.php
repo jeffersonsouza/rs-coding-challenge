@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\StationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=StationRepository::class)
@@ -18,11 +21,13 @@ class Station
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ApiProperty(identifier=false)
      */
     private $id;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ApiProperty(identifier=true)
      */
     private $uuid;
 
@@ -42,11 +47,13 @@ class Station
     private $country;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
@@ -57,14 +64,15 @@ class Station
     private $bookings;
 
     /**
-     * @ORM\OneToMany(targetEntity=StationEquipament::class, mappedBy="station", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=StationEquipment::class, mappedBy="station", orphanRemoval=true)
      */
-    private $stationEquipaments;
+    private $stationEquipments;
 
     public function __construct()
     {
         $this->bookings = new ArrayCollection();
-        $this->stationEquipaments = new ArrayCollection();
+        $this->stationEquipments = new ArrayCollection();
+        $this->uuid = Uuid::v4();
     }
 
     public function getId(): ?int
@@ -145,7 +153,7 @@ class Station
     }
 
     /**
-     * @return Collection|Booking[]
+     * @return Booking[]|Collection
      */
     public function getBookings(): Collection
     {
@@ -175,29 +183,29 @@ class Station
     }
 
     /**
-     * @return Collection|StationEquipament[]
+     * @return Collection|StationEquipment[]
      */
-    public function getStationEquipaments(): Collection
+    public function getStationEquipments(): Collection
     {
-        return $this->stationEquipaments;
+        return $this->stationEquipments;
     }
 
-    public function addStationEquipament(StationEquipament $stationEquipament): self
+    public function addStationEquipment(StationEquipment $stationEquipment): self
     {
-        if (!$this->stationEquipaments->contains($stationEquipament)) {
-            $this->stationEquipaments[] = $stationEquipament;
-            $stationEquipament->setStation($this);
+        if (!$this->stationEquipments->contains($stationEquipment)) {
+            $this->stationEquipments[] = $stationEquipment;
+            $stationEquipment->setStation($this);
         }
 
         return $this;
     }
 
-    public function removeStationEquipament(StationEquipament $stationEquipament): self
+    public function removeStationEquipment(StationEquipment $stationEquipment): self
     {
-        if ($this->stationEquipaments->removeElement($stationEquipament)) {
+        if ($this->stationEquipments->removeElement($stationEquipment)) {
             // set the owning side to null (unless already changed)
-            if ($stationEquipament->getStation() === $this) {
-                $stationEquipament->setStation(null);
+            if ($stationEquipment->getStation() === $this) {
+                $stationEquipment->setStation(null);
             }
         }
 

@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BookingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=BookingRepository::class)
@@ -18,11 +21,13 @@ class Booking
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ApiProperty(identifier=false)
      */
     private $id;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ApiProperty(identifier=true)
      */
     private $uuid;
 
@@ -49,11 +54,13 @@ class Booking
     private $finish_date;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
@@ -65,13 +72,14 @@ class Booking
     private $campervan;
 
     /**
-     * @ORM\OneToMany(targetEntity=BookingEquipament::class, mappedBy="booking", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=BookingEquipment::class, mappedBy="booking", orphanRemoval=true)
      */
-    private $bookingEquipaments;
+    private $bookingEquipments;
 
     public function __construct()
     {
-        $this->bookingEquipaments = new ArrayCollection();
+        $this->bookingEquipments = new ArrayCollection();
+        $this->uuid = Uuid::v4();
     }
 
     public function getId(): ?int
@@ -176,29 +184,29 @@ class Booking
     }
 
     /**
-     * @return Collection|BookingEquipament[]
+     * @return BookingEquipment[]|Collection
      */
-    public function getBookingEquipaments(): Collection
+    public function getBookingEquipments(): Collection
     {
-        return $this->bookingEquipaments;
+        return $this->bookingEquipments;
     }
 
-    public function addBookingEquipament(BookingEquipament $bookingEquipament): self
+    public function addBookingEquipment(BookingEquipment $bookingEquipment): self
     {
-        if (!$this->bookingEquipaments->contains($bookingEquipament)) {
-            $this->bookingEquipaments[] = $bookingEquipament;
-            $bookingEquipament->setBooking($this);
+        if (!$this->bookingEquipments->contains($bookingEquipment)) {
+            $this->bookingEquipments[] = $bookingEquipment;
+            $bookingEquipment->setBooking($this);
         }
 
         return $this;
     }
 
-    public function removeBookingEquipament(BookingEquipament $bookingEquipament): self
+    public function removeBookingEquipment(BookingEquipment $bookingEquipment): self
     {
-        if ($this->bookingEquipaments->removeElement($bookingEquipament)) {
+        if ($this->bookingEquipments->removeElement($bookingEquipment)) {
             // set the owning side to null (unless already changed)
-            if ($bookingEquipament->getBooking() === $this) {
-                $bookingEquipament->setBooking(null);
+            if ($bookingEquipment->getBooking() === $this) {
+                $bookingEquipment->setBooking(null);
             }
         }
 

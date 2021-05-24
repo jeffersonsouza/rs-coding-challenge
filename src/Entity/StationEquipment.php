@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\StationEquipmentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=StationEquipmentRepository::class)
@@ -18,7 +20,7 @@ class StationEquipment
     private $id;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="uuid", unique=true)
      */
     private $uuid;
 
@@ -40,14 +42,21 @@ class StationEquipment
     private $quantity;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::v4();
+    }
 
     public function getId(): ?int
     {
