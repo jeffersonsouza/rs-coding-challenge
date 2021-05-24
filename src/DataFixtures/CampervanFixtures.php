@@ -27,10 +27,11 @@ class CampervanFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        foreach ($this->campervanList as $campervanName) {
+        foreach ($this->campervanList as $key => $campervanName) {
             $campervan = new Campervan();
             $campervan->setName($campervanName);
             $manager->persist($campervan);
+            $this->addReference(Campervan::class.'_'.$key, $campervan);
         }
 
         $manager->flush();
