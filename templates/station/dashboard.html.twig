@@ -11,18 +11,22 @@
                 <th scope="col">Equipment Name</th>
                 <th scope="col">Quantity Booked</th>
                 <th scope="col">Quantity Available</th>
+                <th scope="col">As JSON</th>
             </tr>
         </thead>
         <tbody>
         {% for day in dashboardData %}
             <tr class="center">
-                <th colspan="3">Bookings for {{ day.date }}</th>
+                <th colspan="4">Bookings for {{ day.date }}</th>
             </tr>
             {% for equipment in day.equipments %}
             <tr>
                 <td>{{ equipment.name }}</td>
                 <td>{{ equipment.quantity_booked }}</td>
                 <td>{{ equipment.quantity_available }}</td>
+                <td>
+                    <a target="_blank" href="{{ path('station_dashboard_json', { uuid: station.uuid }, relative = false) }}">JSON</a>
+                </td>
             </tr>
             {% endfor %}
         {% endfor %}
