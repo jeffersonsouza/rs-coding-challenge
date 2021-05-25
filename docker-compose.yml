@@ -1,18 +1,45 @@
 version: '3.4'
 
 services:
-  roadsurfer:
-    image: jeffersonsouza/php:8-nginx
-    restart: always
-    ports:
-      - '8001:80'
-    environment:
-      - APP_ENV=dev
-      - APP_SECRET=7174804de4d1182ba366d58e14fa3480
-      - DATABASE_URL='mysql://root:roadsurferpwd@db:3306/roadsurfer?charset=utf8'
-    volumes:
-      - $PWD/config/nginx/variables.conf:/etc/nginx/http.d/variables.conf:delegated
-      - $PWD:/var/www/roadsurfer/:delegated
+  # roadsurfer:
+  #   image: jeffersonsouza/php:8-nginx
+  #   restart: always
+  #   ports:
+  #     - '8001:80'
+  #   environment:
+  #     - APP_ENV=dev
+  #     - APP_SECRET=7174804de4d1182ba366d58e14fa3480
+  #     - DATABASE_URL='mysql://root:roadsurferpwd@db:3306/roadsurfer?serverVersion=5.7'
+  #   volumes:
+  #     - $PWD/config/nginx/variables.conf:/etc/nginx/http.d/variables.conf:delegated
+  #     - $PWD:/var/www/roadsurfer/:delegated
+  #   depends_on:
+  #     - db
+  # migrate:
+  #   image: jeffersonsouza/php:8-cli
+  #   restart: 'on-failure'
+  #   working_dir: '/var/www/roadsurfer/'
+  #   command: 'php bin/console doctrine:migrations:migrate'
+  #   environment:
+  #     - APP_ENV=dev
+  #     - APP_SECRET=7174804de4d1182ba366d58e14fa3480
+  #     - DATABASE_URL='mysql://root:roadsurferpwd@db:3306/roadsurfer?serverVersion=5.7'
+  #   volumes:
+  #     - $PWD:/var/www/roadsurfer/:delegated
+  #   depends_on:
+  #     - db
+  # seed:
+  #   image: jeffersonsouza/php:8-cli
+  #   restart: 'on-failure'
+  #   command: 'php bin/console doctrine:fixtures:load'
+  #   environment:
+  #     - APP_ENV=dev
+  #     - APP_SECRET=7174804de4d1182ba366d58e14fa3480
+  #     - DATABASE_URL='mysql://root:roadsurferpwd@db:3306/roadsurfer?serverVersion=5.7'
+  #   volumes:
+  #     - $PWD:/var/www/roadsurfer/:delegated
+  #   depends_on:
+  #     - migrate
   db:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1

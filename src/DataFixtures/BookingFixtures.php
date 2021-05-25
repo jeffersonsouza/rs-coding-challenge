@@ -11,7 +11,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class OrderFixtures extends Fixture implements DependentFixtureInterface
+class BookingFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -22,6 +22,7 @@ class OrderFixtures extends Fixture implements DependentFixtureInterface
             $booking->setStartDate(new \DateTime(sprintf('-%d days', rand(1, 100))));
             $booking->setFinishDate(new \DateTime(sprintf('-%d days', rand(15, 100))));
             $booking->setCampervan($this->getReference(Campervan::class.'_'.mt_rand(0, 13)));
+            $manager->persist($booking);
 
             $equipmentsPerOrder = mt_rand(1, 5);
             for ($be = 0; $be <= $equipmentsPerOrder; ++$be) {
@@ -29,9 +30,8 @@ class OrderFixtures extends Fixture implements DependentFixtureInterface
                 $bookingEquipment->setBooking($booking);
                 $bookingEquipment->setEquipment($this->getReference(Equipment::class.'_'.mt_rand(0, 12)));
                 $bookingEquipment->setQuantity(mt_rand(1, 5));
+                $manager->persist($bookingEquipment);
             }
-
-            $manager->persist($booking);
         }
 
         $manager->flush();

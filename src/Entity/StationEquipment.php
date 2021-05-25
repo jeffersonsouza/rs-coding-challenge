@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\StationEquipmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,6 +11,7 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @ORM\Entity(repositoryClass=StationEquipmentRepository::class)
  */
+#[ApiResource]
 class StationEquipment
 {
     /**

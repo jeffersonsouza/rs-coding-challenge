@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BookingEquipmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,6 +11,7 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @ORM\Entity(repositoryClass=BookingEquipmentRepository::class)
  */
+#[ApiResource]
 class BookingEquipment
 {
     /**
@@ -53,7 +55,7 @@ class BookingEquipment
      */
     private $updated_at;
 
-    public function __constructor()
+    public function __construct()
     {
         $this->uuid = Uuid::v4();
     }
