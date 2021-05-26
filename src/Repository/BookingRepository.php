@@ -79,6 +79,12 @@ class BookingRepository extends ServiceEntityRepository
             $equipmentAvailability[$item['equipment_id']] = $quantity_available - $item['quantity_booked'];
         }
 
+        $response = array_values($response);
+        $response = array_map(function($item) {
+            $item['equipments'] = array_values($item['equipments']);
+            return $item;
+        }, $response);
+
         return $response;
     }
 }
